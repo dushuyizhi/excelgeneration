@@ -12,7 +12,6 @@ import java.util.*;
  * 要从哪一行那一列开始替换需要定义一个标识为datas
  * 如果要设定相应的样式，可以在该行使用styles完成设定，此时所有此行都使用该样式
  * 如果使用defaultStyls作为表示，表示默认样式，如果没有defaultStyles使用datas行作为默认样式
- * @author KongHao
  *
  */
 public class ExcelTemplate {
