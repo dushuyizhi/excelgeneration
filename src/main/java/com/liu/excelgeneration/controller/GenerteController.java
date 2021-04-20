@@ -3,15 +3,14 @@ package com.liu.excelgeneration.controller;
 import com.liu.excelgeneration.entity.Student;
 import com.liu.excelgeneration.entity.Teacher;
 import com.liu.excelgeneration.util.ExcelTemplate;
+import com.liu.excelgeneration.util.ExcelTemplateManySheet;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class GenerteController {
@@ -23,12 +22,13 @@ public class GenerteController {
 
         @RequestMapping("generte")
     public void generte(HttpServletResponse response) throws Exception {
-            ExcelTemplate et = ExcelTemplate.getInstance()
+            ExcelTemplateManySheet et = ExcelTemplateManySheet.getInstance()
                     .readTemplateByClasspath("static/testSheel.xlsx");
             List<Teacher> teachers = initData();
+            et.initTemplate(teachers.size());
             for(int i = 0; i < teachers.size(); i++){
                 List<Student> students = teachers.get(i).getStudent();
-                et.setSheet(teachers.size(),teachers.get(i).getNum());
+                et.initSheet(i, teachers.get(i).getNum());
                 for(Student student : students){
                     et.createNewRow();
                     et.createCell(student.getName());
@@ -41,10 +41,10 @@ public class GenerteController {
             String fileName = "三国信息表.xlsx";
 
             //设置Http响应头告诉浏览器下载这个附件,下载的文件名也是在这里设置的
-                response.setContentType("application/x-msdownload;charset=UTF-8");
-                response.setHeader("Content-Disposition",
-                        "attachment;Filename=" + URLEncoder.encode(fileName, "UTF-8"));
-                et.writeToStream(response.getOutputStream());
+            response.setContentType("application/x-msdownload;charset=UTF-8");
+            response.setHeader("Content-Disposition",
+                    "attachment;Filename=" + URLEncoder.encode(fileName, "UTF-8"));
+            et.writeToStream(response.getOutputStream());
     }
 
     public static List<Teacher> initData(){

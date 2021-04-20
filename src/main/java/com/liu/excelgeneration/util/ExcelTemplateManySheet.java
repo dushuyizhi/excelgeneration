@@ -12,10 +12,9 @@ import java.util.*;
  * 要从哪一行那一列开始替换需要定义一个标识为datas
  * 如果要设定相应的样式，可以在该行使用styles完成设定，此时所有此行都使用该样式
  * 如果使用defaultStyls作为表示，表示默认样式，如果没有defaultStyles使用datas行作为默认样式
- * @author KongHao
  *
  */
-public class ExcelTemplate {
+public class ExcelTemplateManySheet {
     /**
      * 数据行标识
      */
@@ -32,9 +31,10 @@ public class ExcelTemplate {
      * 插入序号样式标识
      */
     public final static String SER_NUM = "sernums";
-    private static ExcelTemplate et = new ExcelTemplate();
+//    private static ExcelTemplateManySheet et = new ExcelTemplateManySheet();
     private Workbook wb;
     private Sheet sheet;
+    private Sheet nextSheet;
     /**
      * 数据的初始化列数
      */
@@ -75,19 +75,19 @@ public class ExcelTemplate {
      * 序号的列
      */
     private int serColIndex;
-    private ExcelTemplate(){
+    private ExcelTemplateManySheet(){
 
     }
-    public static ExcelTemplate getInstance() {
-        return et;
+    public static ExcelTemplateManySheet getInstance() {
+        return new ExcelTemplateManySheet();
     }
     /**
      * 从classpath路径下读取相应的模板文件
      * @param path
      * @return
      */
-    public ExcelTemplate readTemplateByClasspath(String path) {
-        InputStream in = ExcelTemplate.class.getClassLoader().getResourceAsStream(path);
+    public ExcelTemplateManySheet readTemplateByClasspath(String path) {
+        InputStream in = ExcelTemplateManySheet.class.getClassLoader().getResourceAsStream(path);
         return this.readTemplateByInputStream(in);
     }
 
@@ -96,10 +96,10 @@ public class ExcelTemplate {
      * @param in
      * @return
      */
-    public ExcelTemplate readTemplateByInputStream(InputStream in) {
+    public ExcelTemplateManySheet readTemplateByInputStream(InputStream in) {
         try {
             wb = WorkbookFactory.create(in);
-            initTemplate();
+//            initTemplate();
         } catch (InvalidFormatException e) {
             e.printStackTrace();
             throw new RuntimeException("读取模板格式有错，！请检查");
@@ -151,10 +151,10 @@ public class ExcelTemplate {
      * @param path
      * @return
      */
-    public ExcelTemplate readTemplateByPath(String path) {
+    public ExcelTemplateManySheet readTemplateByPath(String path) {
         try {
             wb = WorkbookFactory.create(new File(path));
-            initTemplate();
+//            initTemplate();
         } catch (InvalidFormatException e) {
             e.printStackTrace();
             throw new RuntimeException("读取模板格式有错，！请检查");
@@ -284,8 +284,15 @@ public class ExcelTemplate {
         }
     }
 
-    private void initTemplate() {
-        sheet = wb.getSheetAt(0);
+    public void initTemplate(int totalSheeet){
+        while(totalSheeet > 1){
+            wb.cloneSheet(0);
+            totalSheeet --;
+        }
+    }
+    public void initSheet(int index, String sheetName) {
+        sheet = wb.getSheetAt(index);
+        wb.setSheetName(index,sheetName);
         initConfigData();
         lastRowIndex = sheet.getLastRowNum();
         curRow = sheet.createRow(curRowIndex);
@@ -321,6 +328,7 @@ public class ExcelTemplate {
         if(!findSer) {
             initSer();
         }
+
     }
 
     /**
