@@ -1,4 +1,4 @@
-package com.liu.excelgeneration.util;//package com.liu.excelgeneration.util;
+package com.liu.excelgeneration.util.GenExcel;//package com.liu.excelgeneration.util;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
  * 如果使用defaultStyls作为表示，表示默认样式，如果没有defaultStyles使用datas行作为默认样式
  *
  */
-public class ExcelTemplateManySheet {
+public class PoiGenExcelUtil {
     /**
      * 数据行标识
      */
@@ -31,10 +31,8 @@ public class ExcelTemplateManySheet {
      * 插入序号样式标识
      */
     public final static String SER_NUM = "sernums";
-//    private static ExcelTemplateManySheet et = new ExcelTemplateManySheet();
     private Workbook wb;
     private Sheet sheet;
-    private Sheet nextSheet;
     /**
      * 数据的初始化列数
      */
@@ -75,19 +73,19 @@ public class ExcelTemplateManySheet {
      * 序号的列
      */
     private int serColIndex;
-    private ExcelTemplateManySheet(){
+    private PoiGenExcelUtil(){
 
     }
-    public static ExcelTemplateManySheet getInstance() {
-        return new ExcelTemplateManySheet();
+    public static PoiGenExcelUtil getInstance() {
+        return new PoiGenExcelUtil();
     }
     /**
      * 从classpath路径下读取相应的模板文件
      * @param path
      * @return
      */
-    public ExcelTemplateManySheet readTemplateByClasspath(String path) {
-        InputStream in = ExcelTemplateManySheet.class.getClassLoader().getResourceAsStream(path);
+    public PoiGenExcelUtil readTemplateByClasspath(String path) {
+        InputStream in = PoiGenExcelUtil.class.getClassLoader().getResourceAsStream(path);
         return this.readTemplateByInputStream(in);
     }
 
@@ -96,7 +94,7 @@ public class ExcelTemplateManySheet {
      * @param in
      * @return
      */
-    public ExcelTemplateManySheet readTemplateByInputStream(InputStream in) {
+    public PoiGenExcelUtil readTemplateByInputStream(InputStream in) {
         try {
             wb = WorkbookFactory.create(in);
 //            initTemplate();
@@ -151,7 +149,7 @@ public class ExcelTemplateManySheet {
      * @param path
      * @return
      */
-    public ExcelTemplateManySheet readTemplateByPath(String path) {
+    public PoiGenExcelUtil readTemplateByPath(String path) {
         try {
             wb = WorkbookFactory.create(new File(path));
 //            initTemplate();
